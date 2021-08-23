@@ -21,21 +21,30 @@ spec:
       serviceAccountName: replicator-kubernetes-replicator
       securityContext: {}
       containers:
-      - name: kubernetes-replicator
-        securityContext: {}
-        image: quay.io/mittwald/kubernetes-replicator:latest
-        imagePullPolicy: Always
-        args: []
-        ports:
-        - name: health
-          containerPort: 9102
-          protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: health
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: health
-        resources: {}
+        - name: kubernetes-replicator
+          securityContext: {}
+          image: quay.io/mittwald/kubernetes-replicator:latest
+          imagePullPolicy: Always
+          args: []
+          ports:
+            - name: health
+              containerPort: 9102
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+          resources: {}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
